@@ -1,13 +1,13 @@
 package main
 
 import (
-	"al.essio.dev/a/tools/internal/version"
 	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
 	"os/exec"
+	"runtime/debug"
 )
 
 const (
@@ -109,8 +109,17 @@ func handleHelpAndVersionModes() {
 	case helpMode:
 		usage()
 	case versionMode:
-		fmt.Println(version.Version())
+		fmt.Println(version())
 	}
 
 	os.Exit(0)
+}
+
+func version() string {
+	info, ok := debug.ReadBuildInfo()
+	if !ok {
+		return "UNKNOWN"
+	}
+
+	return fmt.Sprintf("%s %s", info.Main.Path, info.Main.Version)
 }
